@@ -1,7 +1,7 @@
 {
   "name": "crypto-trade-bot",
   "version": "1.0.0",
-  "description": "Crypto Trade Bot with Telegram integration",
+  "description": "Crypto Trade Bot with Telegram Inline Button",
   "main": "bot.js",
   "type": "module",
   "scripts": {
