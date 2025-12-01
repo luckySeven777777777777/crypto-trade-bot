@@ -18,7 +18,9 @@ const TELEGRAM_API = `https://api.telegram.org/bot${TOKEN}`;
 // Telegram Webhook 接收
 // -----------------------------
 app.post("/webhook", async (req, res) => {
-  const data = req.body;
+  console.log("Webhook received:", req.body); // 🔹 添加调试
+  res.sendStatus(200);
+});
 
   // 按钮点击回调处理
   if (data.callback_query) {
