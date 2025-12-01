@@ -9,12 +9,16 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 app.use(bodyParser.json());
+
+// 静态文件
 app.use(express.static(path.join(__dirname, "public")));
 
-const TELEGRAM_TOKEN = "8423870040:AAEyKQukt720qD7qHZ9YrIS9m_x-E65coPU";
-const TELEGRAM_API = `https://api.telegram.org/bot${TELEGRAM_TOKEN}`;
+// Telegram 配置
+const TOKEN = "8423870040:AAEyKQukt720qD7qHZ9YrIS9m_x-E65coPU";
+const CHAT_ID = 6062973135;
+const TELEGRAM_API = `https://api.telegram.org/bot${TOKEN}`;
 
-// Webhook 接收
+// Webhook
 app.post("/webhook", async (req, res) => {
   try {
     const data = req.body;
@@ -32,7 +36,7 @@ app.post("/webhook", async (req, res) => {
         show_alert: false
       });
 
-      // 隐藏按钮（一次性）
+      // 隐藏按钮
       await axios.post(`${TELEGRAM_API}/editMessageReplyMarkup`, {
         chat_id: chatId,
         message_id: messageId,
@@ -52,16 +56,16 @@ app.post("/webhook", async (req, res) => {
 
     res.sendStatus(200);
   } catch (err) {
-    console.error("Webhook error:", err.message);
+    console.error(err.message);
     res.sendStatus(500);
   }
 });
 
-// 返回前端页面
+// 首页返回 index.html
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
-// 启动服务器
+// 启动服务
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
