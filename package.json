@@ -1,13 +1,15 @@
 {
   "name": "crypto-trade-bot",
   "version": "1.0.0",
+  "description": "Crypto trade bot with Telegram notifications",
   "main": "bot.js",
+  "type": "commonjs",
   "scripts": {
     "start": "node bot.js"
   },
   "dependencies": {
-    "express": "^5.1.0",
+    "axios": "^1.13.2",
     "body-parser": "^2.2.1",
-    "axios": "^1.13.2"
+    "express": "^5.1.0"
   }
 }
