@@ -1,0 +1,13 @@
+{
+  "name": "crypto-trade-bot",
+  "version": "1.0.0",
+  "main": "bot.js",
+  "scripts": {
+    "start": "node bot.js"
+  },
+  "dependencies": {
+    "express": "^5.1.0",
+    "body-parser": "^2.2.1",
+    "axios": "^1.13.2"
+  }
+}
