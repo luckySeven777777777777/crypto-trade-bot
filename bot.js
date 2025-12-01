@@ -1,18 +1,22 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const axios = require("axios");
+const path = require("path");
 
 const app = express();
 app.use(bodyParser.json());
-app.use(express.static("public")); // 前端 HTML
 
-const PORT = process.env.PORT || 3000; // Railway 会自动分配端口
+// 🚀 静态文件服务
+app.use(express.static(path.join(__dirname, "public")));
 
+const PORT = process.env.PORT || 3000;
+
+// Telegram 配置
 const TOKEN = "8423870040:AAEyKQukt720qD7qHZ9YrIS9m_x-E65coPU";
 const CHAT_ID = 6062973135;
 const TELEGRAM_API = `https://api.telegram.org/bot${TOKEN}`;
 
-// Telegram Webhook 接收
+// Webhook 接收
 app.post("/webhook", async (req, res) => {
     const data = req.body;
     if (data.callback_query) {
@@ -20,7 +24,7 @@ app.post("/webhook", async (req, res) => {
         const chatId = callback.message.chat.id;
         const messageId = callback.message.message_id;
 
-        if (callback.data === "trade_success") {
+        if(callback.data === "trade_success") {
             await axios.post(`${TELEGRAM_API}/editMessageReplyMarkup`, {
                 chat_id: chatId,
                 message_id: messageId,
@@ -32,7 +36,7 @@ app.post("/webhook", async (req, res) => {
             });
         }
 
-        if (callback.data === "trade_cancel") {
+        if(callback.data === "trade_cancel") {
             await axios.post(`${TELEGRAM_API}/editMessageReplyMarkup`, {
                 chat_id: chatId,
                 message_id: messageId,
@@ -45,6 +49,11 @@ app.post("/webhook", async (req, res) => {
         }
     }
     res.sendStatus(200);
+});
+
+// 默认路由，访问 / 自动跳转到 index.html
+app.get("/", (req, res) => {
+    res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
 // 启动服务
