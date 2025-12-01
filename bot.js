@@ -20,42 +20,44 @@ const TELEGRAM_API = `https://api.telegram.org/bot${TOKEN}`;
 app.post("/webhook", async (req, res) => {
   try {
     const data = req.body;
+    console.log("Webhook received:", JSON.stringify(data, null, 2));
 
+    // 处理按钮点击
     if (data.callback_query) {
       const callback = data.callback_query;
       const chatId = callback.message.chat.id;
       const messageId = callback.message.message_id;
-      const user = callback.from.username || callback.from.first_name || "Unknown";
+      const username = callback.from.username || callback.from.first_name || "Unknown";
       const now = new Date().toLocaleString();
 
-      // 回复按钮点击
+      // 回复 Telegram，让按钮点击显示已处理
       await axios.post(`${TELEGRAM_API}/answerCallbackQuery`, {
         callback_query_id: callback.id,
-        text: "操作已处理",
+        text: "操作已记录",
         show_alert: false
       });
 
-      // 清空按钮，保证只能点击一次
+      // 清空按钮
       await axios.post(`${TELEGRAM_API}/editMessageReplyMarkup`, {
         chat_id: chatId,
         message_id: messageId,
         reply_markup: { inline_keyboard: [] }
       });
 
-      // 根据按钮类型发送反馈消息
+      // 发送新的确认消息，显示操作人和时间
       const text = callback.data === "trade_success"
-        ? `✅ 交易成功！\n操作人: ${user}\n时间: ${now}`
-        : `❌ 交易取消！\n操作人: ${user}\n时间: ${now}`;
+        ? `✅ 交易已成功！\n操作人: ${username}\n时间: ${now}`
+        : `❌ 交易已取消！\n操作人: ${username}\n时间: ${now}`;
 
       await axios.post(`${TELEGRAM_API}/sendMessage`, {
         chat_id: chatId,
-        text: text
+        text
       });
     }
 
     res.sendStatus(200);
   } catch (err) {
-    console.error("Webhook error:", err.message);
+    console.error("Error in webhook:", err.message);
     res.sendStatus(500);
   }
 });
